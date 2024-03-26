@@ -29,7 +29,7 @@ class Activity(db.Model, SerializerMixin):
     campers = association_proxy('signups', 'camper', creator=lambda camper_obj: Signup(camper=camper_obj))
     
     # Add serialization rules
-    serialize_rules = ('-signups.activity',)
+    serialize_rules = ('-signups.activity', '-signups.activity_id', '-campers.activity')
     
     def __repr__(self):
         return f'<Activity {self.id}: {self.name}>'
@@ -47,7 +47,7 @@ class Camper(db.Model, SerializerMixin):
     activities = association_proxy('signups', 'activity', creator=lambda activity_obj: Signup(activity=activity_obj))
     
     # Add serialization rules
-    serialize_rules = ('-signups.camper',)
+    serialize_rules = ('-signups.camper', '-signups.camper_id', '-activities.camper')
     
     # Add validation
     @validates('name')
