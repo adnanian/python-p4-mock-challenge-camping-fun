@@ -95,9 +95,24 @@ class ActivityByID(Resource):
             db.session.commit()
             return make_response({'message': 'Activity deleted'}, 204)
         return make_response({'error': 'Activity not found'}, 404)
+    
+class Signups(Resource):
+    def post(self):
+        try:
+            signup = Signup(
+                time=request.get_json().get('time'),
+                activity_id=request.get_json().get('activity_id'),
+                camper_id=request.get_json().get('camper_id')
+            )
+            db.session.add(signup)
+            db.session.commit()
+            return signup.to_dict(), 201
+        except ValueError as e:
+            return {"errors": ["validation errors"]}, 400
 
 api.add_resource(Activities, '/activities')
 api.add_resource(ActivityByID, '/activities/<int:id>')
+api.add_resource(Signups, '/signups')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
